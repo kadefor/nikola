@@ -22,7 +22,7 @@ def init(dst):
     if len(sys.argv) > 3:
         src = sys.argv[3]
     else:
-        src = os.path.join(os.path.dirname(nikola.__file__),'data','samplesite')
+        src = os.path.join(os.path.dirname(nikola.__file__),'demo')
     shutil.copytree(src, dst)
     print "A new site with some sample data has been created at %s." % dst
     print "See README.txt in that folder for more information."

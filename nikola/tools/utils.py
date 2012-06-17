@@ -22,8 +22,7 @@ def get_theme_path(theme):
     dir_name = os.path.join('themes', theme)
     if os.path.isdir(dir_name):
         return dir_name
-    dir_name = os.path.join(os.path.dirname(__file__),
-        'data', 'themes', theme)
+    dir_name = os.path.join(os.path.dirname(__file__), '../themes', theme)
     if os.path.isdir(dir_name):
         return dir_name
     raise Exception(u"Can't find theme '%s'" % theme)
@@ -106,10 +105,10 @@ def copy_tree(src, dst):
 def get_compile_html(input_format):
     """Setup input format library."""
     if input_format == "rest":
-        import rest
+        from parsers import rest
         compile_html = rest.compile_html
     elif input_format == "markdown":
-        import md
+        from parsers import md
         compile_html = md.compile_html
     return compile_html
 
@@ -165,10 +164,10 @@ def get_template_module(template_engine, themes):
     """Setup templating library."""
     templates_module = None
     if template_engine == "mako":
-        import mako_templates
+        from renderers import mako_templates
         templates_module = mako_templates
     elif template_engine == "jinja":
-        import jinja_templates
+        from renderers import jinja_templates
         templates_module = jinja_templates
     templates_module.lookup = \
         templates_module.get_template_lookup(
