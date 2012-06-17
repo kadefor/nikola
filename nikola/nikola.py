@@ -18,7 +18,7 @@ import urlparse
 from doit.tools import PythonInteractiveAction, run_once
 
 import nikola
-import utils
+from tools import utils
 
 __all__ = ['Nikola', 'nikola_main']
 
@@ -1103,7 +1103,7 @@ class Nikola(object):
             config_file.close()
 
             # Generate sitemap
-            import sitemap_gen as smap
+            from tools import sitemap_gen as smap
             sitemap = smap.CreateSitemapFromFile(config_file.name, True)
             if not sitemap:
                 smap.output.Log('Configuration file errors -- exiting.', 0)
