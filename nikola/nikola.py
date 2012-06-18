@@ -172,6 +172,7 @@ class Nikola(object):
         self.posts_per_year = defaultdict(list)
         self.posts_per_tag = defaultdict(list)
         self.timeline = []
+        self.pages = []
         self._scanned = False
 
         # This is the default config
@@ -401,6 +402,8 @@ class Nikola(object):
                     self.posts_per_year[str(post.date.year)].append(post.post_name)
                     for tag in post.tags:
                         self.posts_per_tag[tag].append(post.post_name)
+                    if not use_in_feeds:
+                        self.pages.append(post)
             for name, post in self.global_data.items():
                 self.timeline.append(post)
             self.timeline.sort(cmp=lambda a, b: cmp(a.date, b.date))
@@ -424,6 +427,7 @@ class Nikola(object):
             context['lang'] = lang
             context['title'] = post.title(lang)
             context['permalink'] = post.permalink(lang)
+            context['pages'] = self.pages
             output_name = os.path.join(
                 self.config['OUTPUT_FOLDER'],
                 self.config['TRANSLATIONS'][lang],
@@ -590,6 +594,7 @@ class Nikola(object):
         context["lang"] = lang
         context["prevlink"] = None
         context["nextlink"] = None
+        context['pages'] = self.pages
         context.update(extra_context)
         return {
             'name': output_name.encode('utf8'),
