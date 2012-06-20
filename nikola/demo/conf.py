@@ -31,8 +31,10 @@ post_pages = (
 )
 
 # One or more folders containing files to be copied as-is into the output.
+# The format is a dictionary of "source" "relative destination".
 # Default is:
-# FILES_FOLDERS = ('files', )
+# FILES_FOLDERS = {'files': '' }
+# Which means copy 'files' into 'output'
 
 # A mapping of languages to file-extensions that represent that language.
 # Feel free to add or delete extensions to any list, but don't add any new
@@ -136,7 +138,7 @@ LICENSE = """
     src="http://i.creativecommons.org/l/by-nc-sa/2.5/ar/88x31.png"></a>"""
 
 # A small copyright notice for the page footer
-CONTENT_FOOTER = u'Contents © 2012 <a href=mailto:"ralsina@kde.org">Roberto Alsina</a>'
+CONTENT_FOOTER = u'Contents &copy; 2012 <a href=mailto:"ralsina@kde.org">Roberto Alsina</a>'
 
 # To enable comments via Disqus, you need to create a forum at
 # http://disqus.com, and set DISQUS_FORUM to the short name you selected.

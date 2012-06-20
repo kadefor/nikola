@@ -65,6 +65,8 @@ class Post(object):
         `compile_html` is a function that knows how to compile this Post to
         html.
         """
+        self.prev_post = None
+        self.next_post = None
         self.use_in_feeds = use_in_feeds
         self.blog_url = blog_url
         self.source_path = source_path  # posts/blah.txt
@@ -176,7 +178,7 @@ class Nikola(object):
         # TODO: fill it
         self.config = {
             'OUTPUT_FOLDER': 'output',
-            'FILES_FOLDERS': ('files', ),
+            'FILES_FOLDERS': {'files': ''},
             'ADD_THIS_BUTTONS': True,
             'post_compilers': {
                 "rest":     ['.txt', '.rst'],
@@ -281,6 +283,9 @@ class Nikola(object):
         # Normalize
         src = urlparse.urljoin(self.config['BLOG_URL'], src)
         dst = urlparse.urljoin(src, dst)
+        # Avoid empty links.
+        if src == dst:
+            return "#"
         # Check that link can be made relative, otherwise return dest
         parsed_src = urlparse.urlsplit(src)
         parsed_dst = urlparse.urlsplit(dst)
@@ -400,6 +405,11 @@ class Nikola(object):
                 self.timeline.append(post)
             self.timeline.sort(cmp=lambda a, b: cmp(a.date, b.date))
             self.timeline.reverse()
+            post_timeline = [ p for p in self.timeline if p.use_in_feeds ]
+            for i, p in enumerate(post_timeline[1:]):
+                p.next_post = post_timeline[i]
+            for i, p in enumerate(post_timeline[:-1]):
+                p.prev_post = post_timeline[i+1]
             self._scanned = True
             print "done!"
 
@@ -954,7 +964,8 @@ class Nikola(object):
         for src in kw['files_folders']:
             dst = kw['output_folder']
 
-            for task in utils.copy_tree(src, dst):
+            for task in utils.copy_tree(src, os.path.join(
+                dst, kw['files_folders'][src])):
                 flag = True
                 task['basename'] = 'copy_files'
                 task['uptodate'] = task.get('uptodate', []) +\
@@ -1003,15 +1014,6 @@ class Nikola(object):
         print "-----------------\n"
         title = raw_input("Enter title: ").decode(sys.stdin.encoding)
         slug = utils.slugify(title)
-
-        if not slug:
-            try:
-                from unidecode import unidecode
-            except:
-                print "Please run 'pip install unidecode' for unicode issues"
-                exit()
-            slug = utils.slugify(unidecode(title))
-
         data = u'\n'.join([
             title,
             slug,
