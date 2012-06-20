@@ -179,7 +179,7 @@ class Nikola(object):
         # TODO: fill it
         self.config = {
             'OUTPUT_FOLDER': 'output',
-            'FILES_FOLDERS': {'files': ''},
+            'FILES_FOLDERS': ('files', ),
             'ADD_THIS_BUTTONS': True,
             'post_compilers': {
                 "rest":     ['.txt', '.rst'],
@@ -408,11 +408,10 @@ class Nikola(object):
                 self.timeline.append(post)
             self.timeline.sort(cmp=lambda a, b: cmp(a.date, b.date))
             self.timeline.reverse()
-            post_timeline = [ p for p in self.timeline if p.use_in_feeds ]
-            for i, p in enumerate(post_timeline[1:]):
-                p.next_post = post_timeline[i]
-            for i, p in enumerate(post_timeline[:-1]):
-                p.prev_post = post_timeline[i+1]
+            for i, p in enumerate(self.timeline[1:]):
+                p.next_post = self.timeline[i]
+            for i, p in enumerate(self.timeline[:-1]):
+                p.prev_post = self.timeline[i+1]
             self._scanned = True
             print "done!"
 
@@ -969,8 +968,7 @@ class Nikola(object):
         for src in kw['files_folders']:
             dst = kw['output_folder']
 
-            for task in utils.copy_tree(src, os.path.join(
-                dst, kw['files_folders'][src])):
+            for task in utils.copy_tree(src, dst):
                 flag = True
                 task['basename'] = 'copy_files'
                 task['uptodate'] = task.get('uptodate', []) +\
