@@ -52,7 +52,7 @@ def get_meta(source_path):
 
     for meta in meta_data:
         if not title:
-            title = re_meta(meta,'.. title:')
+            title = re_meta(meta,':title:')
         if not title:
             if re_rst_title.findall(meta):
                 title = re_rst_title.findall(meta)[0]
@@ -60,17 +60,13 @@ def get_meta(source_path):
             if re_md_title.findall(meta):
                 title = re_md_title.findall(meta)[0]
         if not slug:
-            slug = re_meta(meta,'.. slug:')
+            slug = re_meta(meta,':slug:')
         if not date:
-            date = re_meta(meta,'.. date:')
+            date = re_meta(meta,':date:')
         if not tags:
-            tags = re_meta(meta,'.. tags:')
+            tags = re_meta(meta,':tags:')
         if not link:
-            link = re_meta(meta,'.. link:')
-
-    #if not date:
-        #from datetime import datetime
-        #date = datetime.fromtimestamp(os.path.getmtime(source_path)).strftime('%Y/%m/%d %H:%M')
+            link = re_meta(meta,':link:')
 
     return (title,slug,date,tags,link)
 
