@@ -5,8 +5,8 @@
 import os
 import shutil
 import sys
-
 import nikola
+from doit.doit_cmd import cmd_main
 
 USAGE = """To create a new site in a folder, run "nikola init foldername [src]".
 
@@ -28,8 +28,15 @@ def init(dst):
     print "See README.txt in that folder for more information."
 
 if __name__ == "__main__":
-    if len(sys.argv)>=3 and sys.argv[1] == "init":
+    if len(sys.argv) >= 3 and sys.argv[1] == 'init':
         print "Doing init"
         init(sys.argv[2])
-    else:
+    elif (len(sys.argv) == 2 and sys.argv[1] == 'init') \
+            or not os.path.isfile('conf.py'):
         print USAGE
+    else:
+        dodo = os.path.join(os.path.dirname(nikola.__file__), \
+            'data', 'samplesite', 'dodo.py')
+        args = ['-d', os.getcwd(), '-f', dodo]
+        args.extend(sys.argv[1:])
+        sys.exit(cmd_main(args))
